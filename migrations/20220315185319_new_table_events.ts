@@ -8,6 +8,8 @@ export async function up(knex: Knex): Promise<void> {
         table.string('resume');
         table.string('description');
         table.string('localization');
+        table.timestamps();
+
     });
 }
 
