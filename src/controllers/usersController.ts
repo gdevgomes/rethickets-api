@@ -25,6 +25,10 @@ const createUser = async ({
 }) => {
     try {
         const hashPassword = await bcrypt.hash(password, 10);
+        const validate = /(?<NomeDeEmail>[\w+\.]+\w+)@(?<Dominio>rethink.dev$)/
+        if (!email.match(validate)) {
+            throw new Error("Email invalido");
+        }
 
         const user = {
             username,
@@ -52,6 +56,10 @@ const editUser = async ({
     email
 }, id) => {
     const user = await knex.select('*').from('users').where({ id }).first()
+    const validate = /(?<NomeDeEmail>[\w+\.]+\w+)@(?<Dominio>rethink.dev$)/
+    if (!email.match(validate)) {
+        throw new Error("Email invalido");
+    }
     if (user) {
         const hashPassword = password ? await bcrypt.hash(password, 10) : undefined
         const updatedUser = await knex

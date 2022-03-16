@@ -8,7 +8,7 @@ import userController from "../controllers/usersController";
 const router: Router = Router();
 
 router.get('/status', (req: Request, res: Response) => {
-    res.send('User Router');
+    res.status(200).send('User Router');
 });
 
 // GET = All users
