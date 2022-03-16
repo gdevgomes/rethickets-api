@@ -1,9 +1,11 @@
 import { Knex } from 'knex'
+import path from "path";
 
-export const config: Knex.Config = {
+
+const config: Knex.Config = {
   client: 'sqlite3',
   connection: {
-    filename: "../database/dev.sqlite3"
+    filename: path.join(__dirname, '..', 'database', 'dev.sqlite3')
   },
   useNullAsDefault: true,
   migrations: {
@@ -11,3 +13,5 @@ export const config: Knex.Config = {
     directory: 'migrations'
   }
 };
+
+export default config
