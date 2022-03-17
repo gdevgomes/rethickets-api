@@ -1,9 +1,9 @@
 import { Request, Response, Router } from "express";
-import bcrypt from 'bcrypt';
 import knexConfig from "../config/knexConfig";
-import jwt from "jsonwebtoken";
 const knex = require("knex")(knexConfig);
-import userController from "../controllers/usersController";
+import { findAllUser, findUserById, createUser, editUser, joinEvent, deleteUserById } from "../controllers/usersController";
+import { errorMiddleware, responseMiddleware } from "../middleware/responseMiddleware";
+import { editUserValidateBody, joinEventValidate, newUserValidateBody } from "../middleware/yupMiddleware";
 
 const router: Router = Router();
 
@@ -12,6 +12,7 @@ router.get('/status', (req: Request, res: Response) => {
 });
 
 // GET = All users
+<<<<<<< Updated upstream
 router.get('/', async (req: Request, res: Response) => {
     // const user = await knex.select('*').from('users')
     const user = await userController.findAllUser()
@@ -43,5 +44,50 @@ router.delete('/:id', async (req: Request, res: Response) => {
     const user = await knex.delete().from('users').where({ id: req.params.id }).first()
     res.status(200).json(user);
 });
+=======
+router.get("/",
+    findAllUser,
+    responseMiddleware,
+    errorMiddleware
+);
+
+// GET = Find User By ID
+router.get("/:id",
+    findUserById,
+    responseMiddleware,
+    errorMiddleware
+);
+
+// POST = Create User
+router.post("/",
+    newUserValidateBody,
+    createUser,
+    responseMiddleware,
+    errorMiddleware
+);
+
+// PATCH = Edit a user data
+router.patch("/:id",
+    editUserValidateBody,
+    editUser,
+    responseMiddleware,
+    errorMiddleware
+);
+
+// DELETE = Delete a user
+router.delete("/:id",
+    deleteUserById,
+    responseMiddleware,
+    errorMiddleware
+);
+
+// POST = Create User
+router.post('/join/:id',
+    joinEventValidate,
+    joinEvent,
+    responseMiddleware,
+    errorMiddleware
+);
+>>>>>>> Stashed changes
 
 export default router
