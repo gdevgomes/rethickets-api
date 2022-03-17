@@ -135,11 +135,6 @@ export const deleteUserById = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-<<<<<<< Updated upstream
-export default {
-    findAllUser, findUserById, createUser, editUser, deleteUserById
-}
-=======
 // POST = Create User
 export const joinEvent = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -155,4 +150,3 @@ export const joinEvent = async (req: Request, res: Response, next: NextFunction)
 
     }
 };
->>>>>>> Stashed changes
