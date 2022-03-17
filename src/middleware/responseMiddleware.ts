@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 const responseMiddleware = (
-    req: Request,
     res: Response,
-    next: NextFunction
 ) => {
     const status = res.locals.status || 200;
 
@@ -18,14 +16,12 @@ const responseMiddleware = (
 
 const errorMiddleware = async (
     info: any,
-    req: Request,
     res: Response,
-    next: NextFunction
 ) => {
     const status = res.locals.status || 500;
 
     res.status(status).json({
-        message: info || "Internal Server Error",
+        message: res.locals.message || "Internal Server Error",
     });
 };
 
