@@ -10,12 +10,10 @@ const responseMiddleware = (
             message: res.locals.message,
         });
     }
-
     res.status(status).json(res.locals.data);
 };
 
 const errorMiddleware = async (
-    info: any,
     res: Response,
 ) => {
     const status = res.locals.status || 500;

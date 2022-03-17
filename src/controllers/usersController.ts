@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from 'bcrypt';
 import knexConfig from "../config/knexConfig";
+import status from 'http-status';
 const knex = require("knex")(knexConfig);
 
 // GET = All users
@@ -45,7 +46,6 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
             email } = req.body
 
         const hashPassword = await bcrypt.hash(password, 10);
-
         const validate = /(?<NomeDeEmail>[\w+\.]+\w+)@(?<Dominio>rethink.dev$)/
 
         if (!email.match(validate)) {
@@ -63,6 +63,8 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 
         const newUser = await knex('users').insert(user)
         res.locals.data = { userId: newUser[0] };
+        res.locals.status = status.CREATED
+        res.locals.message = status[status.CREATED]
         next();
 
     } catch (error) {
@@ -135,7 +137,7 @@ export const deleteUserById = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-// POST = Create User
+// POST = User Join Event
 export const joinEvent = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userJoinEvent = await knex('users_events').insert({ user_id: req.body.userId, event_id: req.body.event_id })
