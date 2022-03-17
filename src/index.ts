@@ -1,11 +1,9 @@
 import 'dotenv/config'
 import express, { Request, Response, Router } from "express";
 import routes from "./routes/index";
-
 import { knex } from 'knex'
 import config from "./config/knexConfig";
 import bodyParser from "body-parser";
-
 
 export const knexInstance = knex(config);
 

@@ -1,35 +1,46 @@
-import bcrypt from "bcrypt";
-import knex from "../database";
-
+import { Request, Response, NextFunction } from "express";
+import knexConfig from "../../knexfile";
+import status from 'http-status';
+import utils from "../utils/index";
 const jwt = require("jsonwebtoken");
+const knex = require("knex")(knexConfig);
 
-const authentication = async ({ username, password }) => {
-  try {
-    const user = await knex
-      .select("password", "username", "id")
-      .from("users")
-      .where({ username })
-      .first();
 
-    const verify = await bcrypt.compare(password, user.password);
+export const authentication = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {
+            username,
+            password
+        } = req.body
 
-    if (!verify) throw new Error("Wrong Password");
+        const user = await knex
+            .select("password", "username", "id")
+            .from("users")
+            .where({ username })
+            .first();
+        const verify = await utils.comparePassword(password, user.password);
 
-    const data = {
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.email,
-      token: jwt.sign(
-        {
-          user_id: user.id,
-          exp: Date.now() / 1000 + 86400,
-        },
-        process.env.TOKEN_SECRET
-      ),
-    };
-  } catch (error) {
-    console.log(error);
-  }
+        if (!verify) throw new Error("Wrong Password");
 
-  return;
+        const data = {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            token: jwt.sign(
+                {
+                    user_id: user.id,
+                    exp: Date.now() / 1000 + 86400,
+                },
+                process.env.TOKEN_SECRET
+            ),
+        }
+        res.locals.data = data
+        res.locals.status = status.OK
+    } catch (error) {
+        console.log(error);
+        res.locals.status = status.INTERNAL_SERVER_ERROR;
+        res.locals.message = status[status.INTERNAL_SERVER_ERROR];
+        next();
+    }
 };
