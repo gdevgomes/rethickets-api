@@ -7,7 +7,9 @@
     "start": "nodemon src/index.ts -e ts",
     "knex:migrate:make": "knex --knexfile src/database/knexfile.ts -x ts migrate:make",
     "knex:migrate:latest": "knex --knexfile src/database/knexfile.ts migrate:latest",
-    "knex:migrate:rollback": "knex --knexfile src/database/knexfile.ts migrate:rollback"
+    "knex:migrate:rollback": "knex --knexfile src/database/knexfile.ts migrate:rollback",
+    "knex:migrate:status": "knex --knexfile src/database/knexfile.ts migrate:status",
+    "knex:seed:run": "knex --knexfile src/database/knexfile.ts seed:run"
   },
   "repository": {
     "type": "git",
