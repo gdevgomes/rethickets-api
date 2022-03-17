@@ -1,27 +1,32 @@
 import { Request, Response, NextFunction } from "express";
-import bcrypt from 'bcrypt';
-import knexConfig from "../config/knexConfig";
+import knexConfig from "../../knexfile";
 import status from 'http-status';
-import jwt from 'jsonwebtoken';
+import utils from "../utils/index";
+const jwt = require("jsonwebtoken");
 const knex = require("knex")(knexConfig);
 
-export const findAllUser = async (req: Request, res: Response, next: NextFunction) => {
+
+export const authentication = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const {
             username,
-            password,
-            firstName: first_name,
-            lastName: last_name,
-            email,
+            password
         } = req.body
-        const user = await knex.select('password', 'username', 'id').from('users').where({ username }).first()
 
-        const verify = await bcrypt.compare(password, user.password);
+        const user = await knex
+            .select("password", "username", "id")
+            .from("users")
+            .where({ username })
+            .first();
+        const verify = await utils.comparePassword(password, user.password);
 
         if (!verify) throw new Error("Wrong Password");
 
         const data = {
-            first_name, last_name, email,
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
             token: jwt.sign(
                 {
                     user_id: user.id,
